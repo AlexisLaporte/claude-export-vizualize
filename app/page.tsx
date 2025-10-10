@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { parseClaudeExport, ParsedExport } from "@/lib/parser";
 import { ConversationView } from "@/components/ConversationView";
-import { generateShareUrl, decodeFromUrl } from "@/lib/sharing";
 
 export default function Home() {
   const [parsedData, setParsedData] = useState<ParsedExport | null>(null);
@@ -11,23 +10,36 @@ export default function Home() {
   const [inputMethod, setInputMethod] = useState<'paste' | 'upload'>('paste');
   const [shareUrl, setShareUrl] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Load from URL on mount
+  // Load from database on mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const data = params.get('data');
-      if (data) {
-        try {
-          const text = decodeFromUrl(data);
-          const parsed = parseClaudeExport(text);
-          setParsedData(parsed);
-          setOriginalText(text);
-        } catch (error) {
-          console.error("Failed to load from URL:", error);
+    const loadFromDatabase = async () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (id) {
+          setLoading(true);
+          try {
+            const response = await fetch(`/api/exports/${id}`);
+            if (response.ok) {
+              const data = await response.json();
+              const parsed = parseClaudeExport(data.content);
+              setParsedData(parsed);
+              setOriginalText(data.content);
+            } else {
+              alert("Export not found or expired");
+            }
+          } catch (error) {
+            console.error("Failed to load from database:", error);
+            alert("Failed to load export");
+          } finally {
+            setLoading(false);
+          }
         }
       }
-    }
+    };
+    loadFromDatabase();
   }, []);
 
   const handlePaste = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -76,10 +88,29 @@ export default function Home() {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (originalText) {
-      const url = generateShareUrl(originalText);
-      setShareUrl(url);
+      setLoading(true);
+      try {
+        const response = await fetch('/api/exports', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: originalText }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const url = `${window.location.origin}?id=${data.id}`;
+          setShareUrl(url);
+        } else {
+          alert("Failed to save export");
+        }
+      } catch (error) {
+        console.error("Failed to save:", error);
+        alert("Failed to save export");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -107,9 +138,10 @@ export default function Home() {
               {!shareUrl ? (
                 <button
                   onClick={handleShare}
-                  className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition"
+                  disabled={loading}
+                  className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  🔗 Share
+                  {loading ? "Saving..." : "🔗 Share"}
                 </button>
               ) : (
                 <div className="flex gap-2 items-center">
@@ -232,7 +264,7 @@ export default function Home() {
 
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>
-            Your data is processed locally. Nothing is sent to any server.
+            Parsing happens in your browser. Exports are saved to database only when you click Share.
           </p>
         </div>
       </div>
