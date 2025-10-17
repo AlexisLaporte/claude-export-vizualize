@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Robot head (top rectangle) -->
+  <rect x="8" y="6" width="16" height="8" fill="#9333ea" rx="2"/>
+
+  <!-- Robot eyes -->
+  <rect x="11" y="9" width="3" height="3" fill="#ffffff"/>
+  <rect x="18" y="9" width="3" height="3" fill="#ffffff"/>
+
+  <!-- Robot body (bottom rectangle) -->
+  <rect x="6" y="16" width="20" height="10" fill="#9333ea" rx="2"/>
+
+  <!-- Robot feet/base -->
+  <rect x="8" y="28" width="5" height="2" fill="#9333ea" rx="1"/>
+  <rect x="19" y="28" width="5" height="2" fill="#9333ea" rx="1"/>
+</svg>

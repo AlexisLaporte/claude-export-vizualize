@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Claude Code Export Viewer",
   description: "Visualize Claude Code conversation exports beautifully",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

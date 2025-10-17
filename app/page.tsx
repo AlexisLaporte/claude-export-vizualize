@@ -182,10 +182,10 @@ export default function Home() {
       <div className="max-w-3xl w-full">
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
-            <pre className="text-2xl text-purple-600">
-{`▐▛███▜▌
-▝▜█████▛▘
-  ▘▘ ▝▝`}
+            <pre className="text-2xl text-purple-600 leading-tight font-mono" style={{ fontFamily: 'Menlo, Monaco, "Courier New", monospace' }}>
+{` ▄▄▄▄▄
+█▀███▀█
+ ▀▀ ▀▀ `}
             </pre>
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">

@@ -51,10 +51,10 @@ export function parseClaudeExport(text: string): ParsedExport {
     }
     // Assistant message or tool call
     else if (line.trim().startsWith('●')) {
-      const content = line.replace(/^\s*●\s*/, '').trim();
+      const firstLine = line.replace(/^\s*●\s*/, '').trim();
 
       // Check if it's a tool call (contains parentheses)
-      const toolCallMatch = content.match(/^(\w+)\((.+?)\)(?:\s+(.+))?$/);
+      const toolCallMatch = firstLine.match(/^(\w+)\((.+?)\)(?:\s+(.+))?$/);
       if (toolCallMatch) {
         messages.push({
           type: 'tool-call',
@@ -62,13 +62,30 @@ export function parseClaudeExport(text: string): ParsedExport {
           toolArgs: toolCallMatch[2],
           content: toolCallMatch[3] || '',
         });
+        i++;
       } else {
+        // It's an assistant message - collect all continuation lines
+        let content = firstLine;
+        i++;
+
+        // Collect continuation lines until next marker
+        while (i < lines.length && !lines[i].trim().match(/^[>●⎿]/)) {
+          const nextLine = lines[i];
+          // Preserve indentation for continuation lines
+          if (nextLine.trim()) {
+            content += '\n' + nextLine.trimStart();
+          } else if (content && i + 1 < lines.length && !lines[i + 1].trim().match(/^[>●⎿]/)) {
+            // Add blank lines only if they're between content
+            content += '\n';
+          }
+          i++;
+        }
+
         messages.push({
           type: 'assistant',
-          content: content,
+          content: content.trim(),
         });
       }
-      i++;
     }
     // Tool result
     else if (line.trim().startsWith('⎿')) {

@@ -1,9 +1,41 @@
 "use client";
 
-import { ParsedExport } from "@/lib/parser";
+import { ParsedExport, ClaudeMessage } from "@/lib/parser";
 
 interface ConversationViewProps {
   data: ParsedExport;
+}
+
+// Helper to render tool result content with syntax highlighting for diffs
+function renderToolResult(content: string) {
+  const lines = content.split('\n');
+
+  return lines.map((line, i) => {
+    const trimmed = line.trim();
+
+    // Detect diff lines
+    if (trimmed.match(/^\d+\s+[+-]/)) {
+      const isDeletion = trimmed.includes('-');
+      const isAddition = trimmed.includes('+');
+
+      return (
+        <div
+          key={i}
+          className={`${
+            isDeletion
+              ? 'bg-red-50 text-red-800'
+              : isAddition
+              ? 'bg-green-50 text-green-800'
+              : ''
+          }`}
+        >
+          {line}
+        </div>
+      );
+    }
+
+    return <div key={i}>{line}</div>;
+  });
 }
 
 export function ConversationView({ data }: ConversationViewProps) {
@@ -32,12 +64,15 @@ export function ConversationView({ data }: ConversationViewProps) {
         {data.messages.map((msg, idx) => {
           if (msg.type === 'user') {
             return (
-              <div key={idx} className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                  U
+              <div key={idx} className="flex gap-3 items-start">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                  👤
                 </div>
-                <div className="flex-1 bg-blue-50 rounded-lg p-4 border border-blue-200">
-                  <p className="text-gray-800 whitespace-pre-wrap">{msg.content}</p>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-gray-500 mb-1">You</div>
+                  <div className="bg-blue-50 rounded-2xl rounded-tl-sm p-4 border-l-4 border-blue-500 shadow-sm">
+                    <p className="text-gray-900 whitespace-pre-wrap font-medium">{msg.content}</p>
+                  </div>
                 </div>
               </div>
             );
@@ -45,12 +80,15 @@ export function ConversationView({ data }: ConversationViewProps) {
 
           if (msg.type === 'assistant') {
             return (
-              <div key={idx} className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold">
-                  C
+              <div key={idx} className="flex gap-3 items-start">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center shadow-md text-xl">
+                  🤖
                 </div>
-                <div className="flex-1 bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                  <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-purple-600 mb-1">Claude Code</div>
+                  <div className="bg-white rounded-2xl rounded-tl-sm p-4 border border-purple-200 shadow-sm">
+                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                  </div>
                 </div>
               </div>
             );
@@ -58,14 +96,15 @@ export function ConversationView({ data }: ConversationViewProps) {
 
           if (msg.type === 'tool-call') {
             return (
-              <div key={idx} className="ml-11 mb-1">
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 inline-block">
-                  <div className="font-mono text-sm">
-                    <span className="text-amber-700 font-semibold">{msg.toolName}</span>
-                    <span className="text-gray-600">(</span>
-                    <span className="text-blue-600">{msg.toolArgs}</span>
-                    <span className="text-gray-600">)</span>
-                    {msg.content && <span className="text-gray-500 ml-2">{msg.content}</span>}
+              <div key={idx} className="ml-14 mb-2">
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-lg p-3 inline-block shadow-sm">
+                  <div className="font-mono text-sm flex items-center gap-1">
+                    <span className="text-amber-600">⚙️</span>
+                    <span className="text-amber-800 font-bold">{msg.toolName}</span>
+                    <span className="text-gray-500">(</span>
+                    <span className="text-blue-700 font-semibold">{msg.toolArgs}</span>
+                    <span className="text-gray-500">)</span>
+                    {msg.content && <span className="text-gray-600 ml-2 italic">{msg.content}</span>}
                   </div>
                 </div>
               </div>
@@ -73,11 +112,15 @@ export function ConversationView({ data }: ConversationViewProps) {
           }
 
           if (msg.type === 'tool-result') {
+            // Check if it's a diff/update output
+            const isDiff = msg.content.includes('additions and') || msg.content.match(/^\s*\d+\s+[+-]/m);
+
             return (
-              <div key={idx} className="ml-11">
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono overflow-x-auto">
-                    {msg.content}
+              <div key={idx} className="ml-14 mb-3">
+                <div className={`${isDiff ? 'bg-slate-50 border-slate-300' : 'bg-gray-50 border-gray-300'} border rounded-lg p-3 shadow-sm`}>
+                  <div className="text-xs text-gray-500 mb-2 font-semibold">↳ Output</div>
+                  <pre className="text-xs text-gray-700 font-mono overflow-x-auto">
+                    {isDiff ? renderToolResult(msg.content) : msg.content}
                   </pre>
                   {msg.hasMore && (
                     <div className="mt-2 text-xs text-gray-500 italic">
