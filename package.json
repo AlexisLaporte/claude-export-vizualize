@@ -2,8 +2,31 @@
   "name": "claude-export-visualizer",
   "version": "0.1.0",
   "private": true,
+  "description": "Share beautiful Claude Code conversations with shareable URLs",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "ai",
+    "llm",
+    "conversation",
+    "export",
+    "share",
+    "visualization",
+    "developer-tools",
+    "nextjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexisLaporte/claude-export-vizualize.git"
+  },
+  "homepage": "https://github.com/AlexisLaporte/claude-export-vizualize#readme",
+  "bugs": {
+    "url": "https://github.com/AlexisLaporte/claude-export-vizualize/issues"
+  },
+  "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3011",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -1,15 +1,53 @@
-# Claude Code Export Viewer
+<div align="center">
 
-A web app to visualize Claude Code conversation exports beautifully.
+# 🤖 Claude Code Export Viewer
 
-## Features
+**The easiest way to share beautiful Claude Code conversations**
 
-- **Upload or Paste**: Import Claude Code exports via file upload or paste
-- **Beautiful Display**: Clean, color-coded conversation view with tool calls and results
-- **Client-Side Parsing**: All parsing happens in your browser
-- **Database Storage**: Exports saved to Turso (SQLite edge database) when shared
-- **Short Share URLs**: Clean, persistent links like `?id=abc123xyz`
-- **View Counter**: Track how many times exports are viewed
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+
+[Live Demo](https://your-demo-url.vercel.app) • [Report Bug](https://github.com/AlexisLaporte/claude-export-vizualize/issues) • [Request Feature](https://github.com/AlexisLaporte/claude-export-vizualize/issues)
+
+</div>
+
+---
+
+## 💡 Why This Tool?
+
+Ever wanted to **share** a Claude Code conversation with your team, client, or community?
+
+Most tools help you *export* or *backup* your conversations. This is the **only web-based platform** that lets you create beautiful, shareable URLs for your Claude Code sessions.
+
+**Think of it as:**
+- 🔗 Pastebin/Gist for Claude conversations
+- 📸 Carbon.now.sh for AI interactions
+- 📤 Imgur for code discussions
+
+## ✨ Features
+
+- **📤 Upload or Paste**: Import Claude Code exports via file upload or paste
+- **🎨 Beautiful Display**: Clean, color-coded conversation view with tool calls and results
+- **⚡ Client-Side Parsing**: All parsing happens in your browser (instant, private)
+- **🔗 Shareable URLs**: Generate short, persistent links like `?id=abc123xyz`
+- **👁️ View Counter**: Track how many times your exports are viewed
+- **🌍 Zero Install**: No CLI tools, no desktop apps - just a URL
+- **🔒 Privacy First**: Exports only saved to database when you click "Share"
+
+## 🆚 How It Compares
+
+| Feature | This Tool | Other Export Tools |
+|---------|-----------|-------------------|
+| Share via URL | ✅ | ❌ |
+| Beautiful web UI | ✅ | Some |
+| View tracking | ✅ | ❌ |
+| No installation | ✅ | ❌ (most require CLI/desktop) |
+| Export to file | Coming soon | ✅ |
+| Local analysis | ❌ | ✅ |
+
+**Use this when:** You want to share a conversation
+**Use others when:** You want to backup/analyze your own data
 
 ## Tech Stack
 
@@ -123,14 +161,44 @@ CREATE INDEX idx_created_at ON exports(created_at);
 - `POST /api/exports` - Save export, returns `{id}`
 - `GET /api/exports/[id]` - Load export by ID, increments views
 
-## Future Enhancements
+## 🗺️ Roadmap
 
 - [ ] Search within conversations
 - [ ] Export to other formats (HTML, PDF)
 - [ ] Syntax highlighting for code blocks
 - [ ] Optional expiration dates for exports
 - [ ] Analytics dashboard
+- [ ] Dark mode
+- [ ] Conversation diffs
 
-## License
+See [open issues](https://github.com/AlexisLaporte/claude-export-vizualize/issues) for planned features and known issues.
 
-MIT
+## 🤝 Contributing
+
+Contributions are welcome! This is an open-source project.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [Next.js](https://nextjs.org/)
+- Database powered by [Turso](https://turso.tech/)
+- Inspired by the Claude Code community
+
+---
+
+<div align="center">
+
+**[⭐ Star this repo](https://github.com/AlexisLaporte/claude-export-vizualize)** if you find it useful!
+
+Made with ❤️ for the Claude Code community
+
+</div>

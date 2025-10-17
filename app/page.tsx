@@ -139,7 +139,7 @@ export default function Home() {
                 <button
                   onClick={handleShare}
                   disabled={loading}
-                  className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-sm bg-[#C15F3C] hover:bg-[#A14F30] text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? "Saving..." : "🔗 Share"}
                 </button>
@@ -178,21 +178,23 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-6">
       <div className="max-w-3xl w-full">
         <div className="text-center mb-8">
-          <div className="inline-block mb-4">
-            <pre className="text-2xl text-purple-600 leading-tight font-mono" style={{ fontFamily: 'Menlo, Monaco, "Courier New", monospace' }}>
-{` ▄▄▄▄▄
-█▀███▀█
- ▀▀ ▀▀ `}
-            </pre>
+          <div className="inline-block mb-6">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="20" width="40" height="40" rx="8" fill="#C15F3C"/>
+              <path d="M30 35 L40 45 L50 35" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Claude Code Export Viewer
           </h1>
-          <p className="text-gray-600">
-            Upload or paste your Claude Code conversation export to visualize it beautifully
+          <p className="text-gray-700 text-lg mb-1">
+            Share beautiful Claude Code conversations
+          </p>
+          <p className="text-gray-600 text-sm">
+            Upload or paste your export to create a shareable link
           </p>
         </div>
 
@@ -203,7 +205,7 @@ export default function Home() {
               onClick={() => setInputMethod('paste')}
               className={`flex-1 py-3 rounded-lg font-medium transition ${
                 inputMethod === 'paste'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-[#C15F3C] text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -213,7 +215,7 @@ export default function Home() {
               onClick={() => setInputMethod('upload')}
               className={`flex-1 py-3 rounded-lg font-medium transition ${
                 inputMethod === 'upload'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-[#C15F3C] text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -227,7 +229,7 @@ export default function Home() {
                 Paste your export:
               </label>
               <textarea
-                className="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                className="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-[#C15F3C] focus:border-transparent resize-none"
                 placeholder="Paste your Claude Code export here..."
                 onChange={handlePaste}
               />
@@ -237,7 +239,7 @@ export default function Home() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Choose a file:
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-purple-400 transition">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-[#C15F3C] transition">
                 <input
                   type="file"
                   accept=".txt"
@@ -262,10 +264,31 @@ export default function Home() {
           )}
         </div>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>
-            Parsing happens in your browser. Exports are saved to database only when you click Share.
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600 mb-4">
+            🔒 Parsing happens in your browser. Exports are saved only when you click Share.
           </p>
+          <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+            <a
+              href="https://github.com/AlexisLaporte/claude-export-vizualize"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#C15F3C] transition flex items-center gap-1"
+            >
+              ⭐ Star on GitHub
+            </a>
+            <span>•</span>
+            <a
+              href="https://github.com/AlexisLaporte/claude-export-vizualize/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#C15F3C] transition"
+            >
+              Report Issue
+            </a>
+            <span>•</span>
+            <span>Open Source (MIT)</span>
+          </div>
         </div>
       </div>
     </div>
