@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { nanoid } from "nanoid";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
     const { content } = await request.json();
 
     if (!content || typeof content !== "string") {
@@ -15,10 +17,11 @@ export async function POST(request: NextRequest) {
 
     const id = nanoid(10);
     const createdAt = Date.now();
+    const userId = session?.user?.id || null;
 
     await db.execute({
-      sql: "INSERT INTO exports (id, content, created_at) VALUES (?, ?, ?)",
-      args: [id, content, createdAt],
+      sql: "INSERT INTO exports (id, content, created_at, user_id) VALUES (?, ?, ?, ?)",
+      args: [id, content, createdAt, userId],
     });
 
     return NextResponse.json({ id }, { status: 201 });
